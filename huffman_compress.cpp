@@ -52,7 +52,7 @@ const std::string pac::compress(std::istream& rawContent){
                       std::vector<std::shared_ptr<HuffmanTree>>,
                       decltype(htcomparator)> huffmanTreeBuilder(htcomparator);
   std::shared_ptr<HuffmanTree> left, right, root;
-  uint64_t countChar[256] = {0}, sum = 0;
+  uint64_t countChar[256] = {0};
   int32_t byte = 0;
   while(!rawContent.eof()){
     byte = rawContent.get();
@@ -60,12 +60,9 @@ const std::string pac::compress(std::istream& rawContent){
       ++countChar[(uint8_t)byte];
   }
   for(uint16_t idx = 0; idx < 256; ++idx){
-    if(countChar[idx] > 0){
+    if(countChar[idx] > 0)
       huffmanTreeBuilder.push(std::make_shared<HuffmanTree>((uint8_t)idx, countChar[idx], nullptr, nullptr));
-      sum += countChar[idx];
-    }
   }
-  std::cout << sum << std::endl;
   while(huffmanTreeBuilder.size() != 1){
     left = huffmanTreeBuilder.top();
     huffmanTreeBuilder.pop();
@@ -125,7 +122,7 @@ const std::string pac::decompress(std::istream& eContent){
   }
   codingTable << header;
   int16_t padding = codingTable.get() - '0', key;
-  uint64_t frequency, sum = 0;
+  uint64_t frequency;
   while(std::getline(codingTable, row, ';')){
     hexFormat << row.substr(0, 2);
     hexFormat >> std::hex >> key;
@@ -133,12 +130,10 @@ const std::string pac::decompress(std::istream& eContent){
     hexFormat.clear();
     hexFormat << row.substr(2);
     hexFormat >> std::hex >> frequency;
-    sum += frequency;
     hexFormat.str("");
     hexFormat.clear();
     huffmanTreeBuilder.push(std::make_shared<HuffmanTree>((uint8_t)key, frequency, nullptr, nullptr));
   }
-  std::cout << sum << std::endl;
   while(huffmanTreeBuilder.size() != 1){
     left = huffmanTreeBuilder.top();
     huffmanTreeBuilder.pop();
