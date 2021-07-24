@@ -1,14 +1,13 @@
 #include "huffman_compress.hpp"
 //=============================
-#include <algorithm>
 #include <bitset>
-#include <fstream>
 #include <functional>
 #include <map>
 #include <memory>
 #include <queue>
 #include <sstream>
 #include <utility>
+#include <vector>
 //=============================
 
 struct HuffmanTree{
